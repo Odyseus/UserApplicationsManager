@@ -1,0 +1,314 @@
+.\" Man page generated from reStructuredText.
+.
+.TH "APP.PY" "1" "Oct 05, 2018" "" "User Applications Manager"
+.SH NAME
+app.py \- Utility to manage applications inside a user's home directory.
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.SH HINT
+.sp
+This Python application can generate a system executable with Bash completions support. See \fBapp.py generate\fP\&.
+.SH CLI SYNOPSIS
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+
+app.py (\-h | \-\-help | \-\-manual | \-\-version)
+app.py manage [\-i <app_id>... | \-\-id=<app_id>...
+              | \-t <app_type> | \-\-type=<app_type>]
+              [\-f | \-\-force\-update]
+app.py print_app_ids
+app.py generate system_executable
+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.SH REQUIREMENTS
+.sp
+No mayor requirements are needed to run this application other than Python 3 (Python 3.5+ to be precise).
+.SH DETAILED USAGE
+.SS Usage Synopsis
+.INDENT 0.0
+.IP \(bu 2
+A file named \fBconf.py\fP should exist inside the \fBUserData\fP folder.
+.IP \(bu 2
+This file should contain a property named \fBapplications\fP\&.
+.IP \(bu 2
+The \fBapplications\fP property should contain a dictionary of named dictionaries.
+.IP \(bu 2
+Each named dictionary represents an application and should be uniquely named (Duh!).
+.IP \(bu 2
+Each application is checked for valid mandatory keys.
+.IP \(bu 2
+The command \fBapp.py manage\fP is used to manage all applications, or the selected ones or by \fBtype\fP\&.
+.UNINDENT
+.SS CLI options
+.INDENT 0.0
+.IP \(bu 2
+\fB\-h\fP or \fB\-\-help\fP: Display this application basic help screen.
+.IP \(bu 2
+\fB\-\-manual\fP: Display this application manual.
+.IP \(bu 2
+\fB\-\-version\fP: Show this application version.
+.IP \(bu 2
+\fB\-i <app_id>\fP or \fB\-\-id=<app_id>\fP: The application\(aqs ID/s to manage. If not specified, all applications will be managed.
+.IP \(bu 2
+\fB\-t <app_type>\fP or \fB\-\-type=<app_type>\fP: Manage applications of this specified type. See \fBtype\fP application key.
+.IP \(bu 2
+\fB\-f\fP or \fB\-\-force\-update\fP: Force the management of all applications (or the specified ones), ignoring the frequency in which they should be managed. See \fBfrequency\fP application key.
+.UNINDENT
+.SS Commands
+.SS app.py manage
+.sp
+This command will perform different actions depending on the type of application and various conditions. All application types are
+.INDENT 0.0
+.IP \(bu 2
+\fBgit_repo\fP or \fBhg_repo\fP:
+.INDENT 2.0
+.INDENT 3.5
+.INDENT 0.0
+.IP \(bu 2
+If the destination folder doesn\(aqt exists, it will perform a clone of the repository.
+.IP \(bu 2
+If the destination folder exists, a \fBpull\fP from the repository will be performed.
+.IP \(bu 2
+If the destination folder exists and it isn\(aqt a repository, manual intervention will be required.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.IP \(bu 2
+\fBfile\fP:
+.INDENT 2.0
+.INDENT 3.5
+.INDENT 0.0
+.IP \(bu 2
+If the destination file doesn\(aqt exists, a new copy will be downloaded.
+.IP \(bu 2
+If the managed file comes from a Github repository\(aqs \fIAPI URL\fP, a file will be downloaded only if the tag names are different and/or the file hashes doesn\(aqt match.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.IP \(bu 2
+\fBarchive\fP:
+.INDENT 2.0
+.INDENT 3.5
+.INDENT 0.0
+.IP \(bu 2
+Incomplete implementation.
+.IP \(bu 2
+There is no check for file/folder existence. Since a downloaded archive could have various destinations and be either files or folders or both.
+.IP \(bu 2
+If the managed archive comes from a Github repository\(aqs \fIAPI URL\fP, the archive will be downloaded only if the tag names are different. Files/Folders hashes aren\(aqt checked.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.SS app.py print_app_ids
+.sp
+Print on screen all applications IDs as defined in the \fBconf.py\fP file. This command is used by the Bash completions script to assist in the auto\-completion of the \fB\-i\fP and \fB\-\-id=\fP options.
+.SS app.py generate
+.SS Sub\-commands
+.INDENT 0.0
+.IP \(bu 2
+\fBsystem_executable\fP: Create an executable for the \fBapp.py\fP application on the system \fBPATH\fP to be able to run it from anywhere.
+.INDENT 2.0
+.INDENT 3.5
+.INDENT 0.0
+.IP \(bu 2
+The system executable creation process will ask for an executable name and the absolute path to store the executable file (the default is \fB$HOME/.local/bin\fP).
+.IP \(bu 2
+It will also ask for bash completions creation.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.SS Example configuration file
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+#!/usr/bin/python3
+# \-*\- coding: utf\-8 \-*\-
+"""Functional example configuration file.
+"""
+
+
+applications = {
+    # ##################
+    # Git repositories #
+    # ##################
+    "bash\-it": {
+        "name": "Bash\-it",
+        "type": "git_repo",
+        "url": "https://github.com/Bash\-it/bash\-it.git",
+        "destination": "~/.bash_it"
+    },
+
+    # ##############
+    # Single files #
+    # ##############
+    "devdocs\-desktop": {
+        "name": "DevDocs Desktop",
+        "url": "https://api.github.com/repos/egoist/devdocs\-desktop/releases/latest",
+        "type": "file",
+        "destination": "~/.local/bin/DevDocs.AppImage",
+        "frequency": "m",
+        "github_api_asset_data": {
+            "asset_name_contains": "x86_64",
+            "asset_name_starts": "DevDocs",
+            "asset_name_ends": "AppImage",
+        }
+    },
+
+    # ##########
+    # Archives #
+    # ##########
+    "dart\-sass": {
+        "name": "Dart Sass",
+        "url": "https://api.github.com/repos/sass/dart\-sass/releases/latest",
+        "type": "archive",
+        "unzip_prog": "tar",
+        "unzip_args": "xzvf",
+        "unzip_targets": [
+            ("dart\-sass", "~/.local/lib"),
+        ],
+        "post_extraction_actions": {
+            "symlinks": [
+                ("~/.local/lib/dart\-sass/sass", "~/.local/bin/sass")
+            ],
+            "set_exec": [
+                "~/.local/lib/dart\-sass/sass"
+            ]
+        },
+        "github_api_asset_data": {
+            "asset_name_contains": "linux\-x64",
+            "asset_name_starts": "dart\-sass",
+            "asset_name_ends": "tar.gz",
+        }
+    }
+}
+
+
+if __name__ == "__main__":
+    pass
+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.SS Application keys
+.INDENT 0.0
+.IP \(bu 2
+\fBname\fP (String|Mandatory): The name of an application.
+.IP \(bu 2
+\fBtype\fP (String|Mandatory): The application type that will decide how to handle downloaded application files.
+.INDENT 2.0
+.INDENT 3.5
+.INDENT 0.0
+.IP \(bu 2
+\fBgit_repo\fP or \fBhg_repo\fP: The application is a Git or Mercurial repository.
+.IP \(bu 2
+\fBfile\fP: The application is a single file.
+.IP \(bu 2
+\fBarchive\fP: The application is an archive that needs to be unpacked.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.IP \(bu 2
+\fBurl\fP (String|Mandatory): The URL where to download the application.
+.IP \(bu 2
+\fBdestination\fP (String|Mandatory): The final destination for an application.
+.INDENT 2.0
+.INDENT 3.5
+.INDENT 0.0
+.IP \(bu 2
+\fBgit_repo\fP or \fBhg_repo\fP: The \fBdestination\fP should always be a path to a folder.
+.IP \(bu 2
+\fBfile\fP: The \fBdestination\fP should always be a path to a file.
+.IP \(bu 2
+\fBarchive\fP: The \fBdestination\fP is not needed/used so it isn\(aqt mandatory for this type of application.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.IP \(bu 2
+\fBfrequency\fP (String|Optional): Frequency in which an application should be downloaded. If not specified, it defaults to \fBw\fP (weekly).
+.INDENT 2.0
+.INDENT 3.5
+.INDENT 0.0
+.IP \(bu 2
+\fBd\fP (daily): An application is downloaded every time that it is managed.
+.IP \(bu 2
+\fBw\fP (weekly): An application is downloaded only if at least 6 days have passed since the last download.
+.IP \(bu 2
+\fBm\fP (monthly): An application is downloaded only if at least 28 days have passed since the last download.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.IP \(bu 2
+\fBgithub_api_asset_data\fP (Dictionary|Optional): This key must contain \fImatching data\fP and must be used only when an application \fBurl\fP key points to a Github repository\(aqs \fIAPI URL\fP\&. The Github repository\(aqs \fIAPI URL\fP is used to download a JSON file with data about a repository release. The \fBname\fP key of each element of the array/list called \fBassets\fP of the downloaded JSON file is scanned for different matches to locate the URL of the asset that one actually wants to download. This key is only used by applications of \fBtype\fP \fBfile\fP or \fBarchive\fP\&.
+.INDENT 2.0
+.INDENT 3.5
+.INDENT 0.0
+.IP \(bu 2
+\fBasset_name_contains\fP: Self explanatory.
+.IP \(bu 2
+\fBasset_name_starts\fP: Self explanatory.
+.IP \(bu 2
+\fBasset_name_ends\fP: Self explanatory.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.IP \(bu 2
+\fBunzip_prog\fP (String|Mandatory): The name of the command used to unpack an archive. Key only used by applications of \fBtype\fP \fBarchive\fP\&.
+.IP \(bu 2
+\fBunzip_args\fP (String|Mandatory): Arguments passed to the command defined in \fBunzip_prog\fP\&. Key only used by applications of \fBtype\fP \fBarchive\fP\&.
+.IP \(bu 2
+\fBunzip_targets\fP (List|Mandatory): A list of tuples. At index zero of each tuple should be defined the path to a file/folder inside a downloaded archive. At index one should be defined the path to the folder where the target should be extracted. Key only used by applications of \fBtype\fP \fBarchive\fP\&.
+.IP \(bu 2
+\fBpost_extraction_actions\fP (Dictionary|Optional): A list of actions to perform after an archive is extracted.
+.INDENT 2.0
+.INDENT 3.5
+.INDENT 0.0
+.IP \(bu 2
+\fBsymlinks\fP: A list of tuples. At index zero, the path to a file/folder. At index one, the path to the generated symbolic link.
+.IP \(bu 2
+\fBset_exec\fP: A list of file paths to set as executable.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.SH AUTHOR
+Odyseus
+.SH COPYRIGHT
+2016-2018, Odyseus
+.\" Generated by docutils manpage writer.
+.
