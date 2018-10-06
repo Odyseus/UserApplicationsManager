@@ -1,6 +1,6 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "APP.PY" "1" "Oct 05, 2018" "" "User Applications Manager"
+.TH "APP.PY" "1" "Oct 06, 2018" "" "User Applications Manager"
 .SH NAME
 app.py \- Utility to manage applications inside a user's home directory.
 .
@@ -83,7 +83,7 @@ The command \fBapp.py manage\fP is used to manage all applications, or the selec
 .IP \(bu 2
 \fB\-t <app_type>\fP or \fB\-\-type=<app_type>\fP: Manage applications of this specified type. See \fBtype\fP application key.
 .IP \(bu 2
-\fB\-f\fP or \fB\-\-force\-update\fP: Force the management of all applications (or the specified ones), ignoring the frequency in which they should be managed. See \fBfrequency\fP application key.
+\fB\-f\fP or \fB\-\-force\-update\fP: Force the management of all applications (or the specified ones), ignoring the frequency (and any other checks) in which they should be managed. See \fBfrequency\fP application key.
 .UNINDENT
 .SS Commands
 .SS app.py manage
@@ -255,7 +255,7 @@ if __name__ == "__main__":
 .IP \(bu 2
 \fBfile\fP: The \fBdestination\fP should always be a path to a file.
 .IP \(bu 2
-\fBarchive\fP: The \fBdestination\fP is not needed/used so it isn\(aqt mandatory for this type of application.
+\fBarchive\fP: The \fBdestination\fP is not needed/used so it isn\(aqt mandatory for this type of application. See \fBunzip_targets\fP key.
 .UNINDENT
 .UNINDENT
 .UNINDENT
@@ -274,7 +274,7 @@ if __name__ == "__main__":
 .UNINDENT
 .UNINDENT
 .IP \(bu 2
-\fBgithub_api_asset_data\fP (Dictionary|Optional): This key must contain \fImatching data\fP and must be used only when an application \fBurl\fP key points to a Github repository\(aqs \fIAPI URL\fP\&. The Github repository\(aqs \fIAPI URL\fP is used to download a JSON file with data about a repository release. The \fBname\fP key of each element of the array/list called \fBassets\fP of the downloaded JSON file is scanned for different matches to locate the URL of the asset that one actually wants to download. This key is only used by applications of \fBtype\fP \fBfile\fP or \fBarchive\fP\&.
+\fBgithub_api_asset_data\fP (Dictionary|Optional): This key must contain \fImatching data\fP and must be used only when an application \fBurl\fP key points to a Github repository\(aqs \fIAPI URL\fP\&. The Github repository\(aqs \fIAPI URL\fP is used to download a JSON file with data about a repository release. The \fBname\fP key of each element of the array/list called \fBassets\fP of the downloaded JSON file is scanned for different matches to locate the URL of the asset that one actually wants to download. This key is only used by applications of \fBtype\fP \fBfile\fP or \fBarchive\fP\&. And needless to say that this key is mandatory when an application \fBurl\fP key points to a Github repository\(aqs \fIAPI URL\fP\&. Otherwise, there wouldn\(aqt be a way to pinpoint the exact asset that needs to be downloaded.
 .INDENT 2.0
 .INDENT 3.5
 .INDENT 0.0
@@ -288,7 +288,7 @@ if __name__ == "__main__":
 .UNINDENT
 .UNINDENT
 .IP \(bu 2
-\fBunzip_prog\fP (String|Mandatory): The name of the command used to unpack an archive. Key only used by applications of \fBtype\fP \fBarchive\fP\&.
+\fBunzip_prog\fP (String|Mandatory): The name of the command used to unpack an archive. Key only used by applications of \fBtype\fP \fBarchive\fP\&. As of now, only the \fBtar\fP command is implemented.
 .IP \(bu 2
 \fBunzip_args\fP (String|Mandatory): Arguments passed to the command defined in \fBunzip_prog\fP\&. Key only used by applications of \fBtype\fP \fBarchive\fP\&.
 .IP \(bu 2
