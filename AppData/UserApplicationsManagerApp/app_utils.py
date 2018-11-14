@@ -186,10 +186,10 @@ class ApplicationsManager():
 
         self._filter_group_extend_apps()
 
-    def _print_shell_separator(self):
+    def _print_shell_separator(self, sep_char):
         """Print shell separator.
         """
-        self.logger.info(shell_utils.get_cli_separator(), date=False)
+        self.logger.info(shell_utils.get_cli_separator(sep_char), date=False)
 
     def _check_url(self, url):
         """Check if an URL can be reached.
@@ -396,13 +396,15 @@ class ApplicationsManager():
             apps = getattr(self, "_apps_type_%s_repo" % repo_type, None)
 
             if apps:
-                self._print_shell_separator()
+                self._print_shell_separator("#")
                 self.logger.info("Handling %s repositories..." %
                                  self._repo_types_names_map[repo_type])
 
                 for app_id, app in apps.items():
+                    self._print_shell_separator("-")
+                    self.logger.info("Handling %s's repository..." % app["name"])
+
                     if self.force_update or self._should_update(app):
-                        self.logger.info("Handling %s's repository..." % app["name"])
                         repo_path = app["destination"]
 
                         if file_utils.is_real_dir(repo_path):
@@ -444,12 +446,14 @@ class ApplicationsManager():
             See :any:`exceptions.KeyboardInterruption`.
         """
         if self._apps_type_file:
-            self._print_shell_separator()
+            self._print_shell_separator("#")
             self.logger.info("Handling individual files...")
 
             for app_id, app in self._apps_type_file.items():
+                self._print_shell_separator("-")
+                self.logger.info("Handling %s's file..." % app["name"])
+
                 if self.force_update or self._should_update(app):
-                    self.logger.info("Handling %s's file..." % app["name"])
                     release_tag = None
                     file_path = app["destination"]
 
@@ -596,10 +600,13 @@ class ApplicationsManager():
             See :any:`exceptions.KeyboardInterruption`.
         """
         if self._apps_type_archive:
-            self._print_shell_separator()
+            self._print_shell_separator("#")
             self.logger.info("Handling archives...")
 
             for app_id, app in self._apps_type_archive.items():
+                self._print_shell_separator("-")
+                self.logger.info("Handling %s's archive..." % app["name"])
+
                 if not cmd_utils.which(app["unzip_prog"]):
                     self.logger.warning("Command <%s> not found on your system." %
                                         app["unzip_prog"])
@@ -607,7 +614,6 @@ class ApplicationsManager():
                     continue
 
                 if self.force_update or self._should_update(app):
-                    self.logger.info("Handling %s's archive..." % app["name"])
                     release_tag = None
 
                     if app.get("github_api_asset_data"):
