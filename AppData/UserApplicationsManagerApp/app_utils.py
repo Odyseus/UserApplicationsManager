@@ -376,10 +376,11 @@ class ApplicationsManager():
             URL of the on-line repository.
         """
         cmd_utils.run_cmd(
-            "{0} clone {1} {2}".format(
-                repo_type,
-                repo_url,
-                os.path.basename(repo_path)
+            "{cmd} clone {depth} {url} {path}".format(
+                cmd=repo_type,
+                depth="--depth=1" if repo_type is "git" else "",
+                url=repo_url,
+                path=os.path.basename(repo_path)
             ),
             stdout=None,
             stderr=None,
