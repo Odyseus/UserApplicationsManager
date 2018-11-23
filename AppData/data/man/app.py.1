@@ -1,6 +1,6 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "APP.PY" "1" "Nov 15, 2018" "" "User Applications Manager"
+.TH "APP.PY" "1" "Nov 22, 2018" "" "User Applications Manager"
 .SH NAME
 app.py \- Utility to manage applications inside a user's home directory.
 .
@@ -55,7 +55,9 @@ app.py generate system_executable
 .sp
 No mayor requirements are needed to run this application other than Python 3 (Python 3.5+ to be precise).
 .SH DETAILED USAGE
-.SS Usage Synopsis
+.INDENT 0.0
+.INDENT 3.5
+.IP "Highlights"
 .INDENT 0.0
 .IP \(bu 2
 A file named \fBconf.py\fP should exist inside the \fBUserData\fP folder.
@@ -68,7 +70,9 @@ Each named dictionary represents an application and should be uniquely named (Du
 .IP \(bu 2
 Each application is checked for valid mandatory keys.
 .IP \(bu 2
-The command \fBapp.py manage\fP is used to manage all applications, or the selected ones or by \fBtype\fP\&.
+The command \fBapp.py manage\fP is used to manage all applications, or the selected ones (\fB\-\-id=<app_id>\fP CLI option) or by type (\fB\-\-type=<app_type>\fP CLI option).
+.UNINDENT
+.UNINDENT
 .UNINDENT
 .SS CLI options
 .INDENT 0.0
@@ -78,34 +82,28 @@ The command \fBapp.py manage\fP is used to manage all applications, or the selec
 \fB\-\-manual\fP: Display this application manual.
 .IP \(bu 2
 \fB\-\-version\fP: Show this application version.
-.IP \(bu 2
-\fB\-i <app_id>\fP or \fB\-\-id=<app_id>\fP: The application\(aqs ID/s to manage. If not specified, all applications will be managed.
-.IP \(bu 2
-\fB\-t <app_type>\fP or \fB\-\-type=<app_type>\fP: Manage applications of this specified type. See \fBtype\fP application key.
-.IP \(bu 2
-\fB\-f\fP or \fB\-\-force\-update\fP: Force the management of all applications (or the specified ones), ignoring the frequency (and any other checks) in which they should be managed. See \fBfrequency\fP application key.
 .UNINDENT
 .SS Commands
 .SS app.py manage
 .sp
-This command will perform different actions depending on the type of application and various conditions. All application types are
+This command will perform different actions depending on the type of application and various conditions.
 .INDENT 0.0
 .IP \(bu 2
-\fBgit_repo\fP or \fBhg_repo\fP:
+For applications of type \fBgit_repo\fP or \fBhg_repo\fP:
 .INDENT 2.0
 .INDENT 3.5
 .INDENT 0.0
 .IP \(bu 2
-If the destination folder doesn\(aqt exists, it will perform a clone of the repository.
+If the destination folder doesn\(aqt exist, it will perform a clone of the repository.
 .IP \(bu 2
-If the destination folder exists, a \fBpull\fP from the repository will be performed.
+If the destination folder exist, a \fBpull\fP from the repository will be performed.
 .IP \(bu 2
-If the destination folder exists and it isn\(aqt a repository, manual intervention will be required.
+If the destination folder exist and it isn\(aqt a repository, manual intervention will be required.
 .UNINDENT
 .UNINDENT
 .UNINDENT
 .IP \(bu 2
-\fBfile\fP:
+For applications of type \fBfile\fP:
 .INDENT 2.0
 .INDENT 3.5
 .INDENT 0.0
@@ -117,7 +115,7 @@ If the managed file comes from a Github repository\(aqs \fIAPI URL\fP, a file wi
 .UNINDENT
 .UNINDENT
 .IP \(bu 2
-\fBarchive\fP:
+For applications of type \fBarchive\fP:
 .INDENT 2.0
 .INDENT 3.5
 .INDENT 0.0
@@ -131,9 +129,18 @@ If the managed archive comes from a Github repository\(aqs \fIAPI URL\fP, the ar
 .UNINDENT
 .UNINDENT
 .UNINDENT
+.SS Options
+.INDENT 0.0
+.IP \(bu 2
+\fB\-i <app_id>\fP or \fB\-\-id=<app_id>\fP: The application\(aqs ID/s to manage. If not specified, all applications will be managed.
+.IP \(bu 2
+\fB\-t <app_type>\fP or \fB\-\-type=<app_type>\fP: Manage applications of this specified type. See \fBtype\fP application key.
+.IP \(bu 2
+\fB\-f\fP or \fB\-\-force\-update\fP: Force the management of all applications (or the specified ones), ignoring the frequency (and any other checks) in which they should be managed. See \fBfrequency\fP application key.
+.UNINDENT
 .SS app.py print_app_ids
 .sp
-Print on screen all applications IDs as defined in the \fBconf.py\fP file. This command is used by the Bash completions script to assist in the auto\-completion of the \fB\-i\fP and \fB\-\-id=\fP options.
+Command only used by the Bash completions script to assist in the auto\-completion of the \fB\-i <app_id>\fP or \fB\-\-id=<app_id>\fP CLI options.
 .SS app.py generate
 .SS Sub\-commands
 .INDENT 0.0
@@ -150,7 +157,8 @@ It will also ask for bash completions creation.
 .UNINDENT
 .UNINDENT
 .UNINDENT
-.SS Example configuration file
+.SH FILE TEMPLATES
+.SS conf.py template
 .INDENT 0.0
 .INDENT 3.5
 .sp
@@ -225,12 +233,19 @@ if __name__ == "__main__":
 .fi
 .UNINDENT
 .UNINDENT
-.SS Application keys
+.sp
+\fBNOTE:\fP
+.INDENT 0.0
+.INDENT 3.5
+All data keys are of type string and are optional unless specified otherwise.
+.UNINDENT
+.UNINDENT
+.SS Data keys
 .INDENT 0.0
 .IP \(bu 2
-\fBname\fP (String|Mandatory): The name of an application.
+\fBname\fP (\fBMandatory\fP): The name of an application.
 .IP \(bu 2
-\fBtype\fP (String|Mandatory): The application type that will decide how to handle downloaded application files.
+\fBtype\fP (\fBMandatory\fP): The application type that will decide how to handle downloaded application files.
 .INDENT 2.0
 .INDENT 3.5
 .INDENT 0.0
@@ -244,9 +259,9 @@ if __name__ == "__main__":
 .UNINDENT
 .UNINDENT
 .IP \(bu 2
-\fBurl\fP (String|Mandatory): The URL where to download the application.
+\fBurl\fP (\fBMandatory\fP): The URL where to download the application.
 .IP \(bu 2
-\fBdestination\fP (String|Mandatory): The final destination for an application.
+\fBdestination\fP (\fBMandatory\fP): The final destination for an application.
 .INDENT 2.0
 .INDENT 3.5
 .INDENT 0.0
@@ -260,7 +275,7 @@ if __name__ == "__main__":
 .UNINDENT
 .UNINDENT
 .IP \(bu 2
-\fBfrequency\fP (String|Optional): Frequency in which an application should be downloaded. If not specified, it defaults to \fBw\fP (weekly).
+\fBfrequency\fP: Frequency in which an application should be downloaded. If not specified, it defaults to \fBw\fP (weekly).
 .INDENT 2.0
 .INDENT 3.5
 .INDENT 0.0
@@ -274,7 +289,7 @@ if __name__ == "__main__":
 .UNINDENT
 .UNINDENT
 .IP \(bu 2
-\fBgithub_api_asset_data\fP (Dictionary|Optional): This key must contain \fImatching data\fP and must be used only when an application \fBurl\fP key points to a Github repository\(aqs \fIAPI URL\fP\&. The Github repository\(aqs \fIAPI URL\fP is used to download a JSON file with data about a repository release. The \fBname\fP key of each element of the array/list called \fBassets\fP of the downloaded JSON file is scanned for different matches to locate the URL of the asset that one actually wants to download. This key is only used by applications of \fBtype\fP \fBfile\fP or \fBarchive\fP\&. And needless to say that this key is mandatory when an application \fBurl\fP key points to a Github repository\(aqs \fIAPI URL\fP\&. Otherwise, there wouldn\(aqt be a way to pinpoint the exact asset that needs to be downloaded.
+\fBgithub_api_asset_data\fP (\fBDictionary\fP): This key must contain \fImatching data\fP and must be used only when an application \fBurl\fP key points to a Github repository\(aqs \fIAPI URL\fP\&. The Github repository\(aqs \fIAPI URL\fP is used to download a JSON file with data about a repository release. The \fBname\fP key of each element of the array/list called \fBassets\fP of the downloaded JSON file is scanned for different matches to locate the URL of the asset that one actually wants to download. This key is only used by applications of \fBtype\fP \fBfile\fP or \fBarchive\fP\&. And needless to say that this key is mandatory when an application \fBurl\fP key points to a Github repository\(aqs \fIAPI URL\fP\&. Otherwise, there wouldn\(aqt be a way to pinpoint the exact asset that needs to be downloaded.
 .INDENT 2.0
 .INDENT 3.5
 .INDENT 0.0
@@ -288,13 +303,13 @@ if __name__ == "__main__":
 .UNINDENT
 .UNINDENT
 .IP \(bu 2
-\fBunzip_prog\fP (String|Mandatory): The name of the command used to unpack an archive. Key only used by applications of \fBtype\fP \fBarchive\fP\&. As of now, only the \fBtar\fP command is implemented.
+\fBunzip_prog\fP (\fBMandatory\fP): The name of the command used to unpack an archive. Key only used by applications of \fBtype\fP \fBarchive\fP\&. As of now, only the \fBtar\fP command is implemented.
 .IP \(bu 2
-\fBunzip_args\fP (String|Mandatory): Arguments passed to the command defined in \fBunzip_prog\fP\&. Key only used by applications of \fBtype\fP \fBarchive\fP\&.
+\fBunzip_args\fP (\fBMandatory\fP): Arguments passed to the command defined in \fBunzip_prog\fP\&. Key only used by applications of \fBtype\fP \fBarchive\fP\&.
 .IP \(bu 2
-\fBunzip_targets\fP (List|Mandatory): A list of tuples. At index zero of each tuple should be defined the path to a file/folder inside a downloaded archive. At index one should be defined the path to the folder where the target should be extracted. Key only used by applications of \fBtype\fP \fBarchive\fP\&.
+\fBunzip_targets\fP (\fBMandatory\fP | \fBList\fP): A list of tuples. At index zero of each tuple should be defined the path to a file/folder inside a downloaded archive. At index one should be defined the path to the folder where the target should be extracted. Key only used by applications of \fBtype\fP \fBarchive\fP\&.
 .IP \(bu 2
-\fBpost_extraction_actions\fP (Dictionary|Optional): A list of actions to perform after an archive is extracted.
+\fBpost_extraction_actions\fP (\fBDictionary\fP): A list of actions to perform after an archive is extracted.
 .INDENT 2.0
 .INDENT 3.5
 .INDENT 0.0
