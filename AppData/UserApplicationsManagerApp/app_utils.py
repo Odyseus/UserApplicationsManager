@@ -188,6 +188,11 @@ class ApplicationsManager():
 
     def _print_shell_separator(self, sep_char):
         """Print shell separator.
+
+        Parameters
+        ----------
+        sep_char : str
+            Character to use as a separator.
         """
         self.logger.info(shell_utils.get_cli_separator(sep_char), date=False)
 
