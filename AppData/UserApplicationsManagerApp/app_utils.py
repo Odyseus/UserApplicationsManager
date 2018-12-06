@@ -4,23 +4,9 @@
 
 Attributes
 ----------
-base_app_keys : set
-    Mandatory keys for all applications.
-base_app_keys_for_archives : set
-    Mandatory keys for applications of type "archive".
-base_app_keys_for_files : set
-    Mandatory keys for applications of type "file".
-base_app_keys_for_repos : set
-    Mandatory keys for applications of type "\*_repo".
-conf_file : str
-    Path to the configuration file.
-home : str
-    Path to the User's home folder.
 root_folder : str
     The main folder containing the application. All commands must be executed
     from this location without exceptions.
-update_data_file : str
-    Path to the file where the update data for applications is stored.
 """
 import json
 import os
@@ -45,14 +31,18 @@ from urllib.error import URLError
 root_folder = os.path.realpath(os.path.abspath(os.path.join(
     os.path.normpath(os.getcwd()))))
 
-home = os.path.expanduser("~")
-conf_file = os.path.join(root_folder, "UserData", "conf.py")
-update_data_file = os.path.join(root_folder, "UserData", "update-data.json")
-base_app_keys = {"name", "url", "type"}
-base_app_keys_for_archives = base_app_keys.union(
-    {"unzip_prog", "post_extraction_actions", "unzip_targets"})
-base_app_keys_for_files = base_app_keys.union({"destination"})
-base_app_keys_for_repos = base_app_keys.union({"destination"})
+_paths_map = {
+    "conf_file": os.path.join(root_folder, "UserData", "conf.py"),
+    "update_data_file": os.path.join(root_folder, "UserData", "update-data.json")
+}
+
+_base_app_keys = {"name", "url", "type"}
+_base_app_keys_for = {
+    "archives": _base_app_keys.union(
+        {"unzip_prog", "post_extraction_actions", "unzip_targets"}),
+    "files": _base_app_keys.union({"destination"}),
+    "repos": _base_app_keys.union({"destination"})
+}
 
 
 def get_applications(logger, validate=True):
@@ -80,9 +70,9 @@ def get_applications(logger, validate=True):
         See :any:`exceptions.MissingRequiredFile`.
     """
     try:
-        all_apps = run_path(conf_file)["applications"]
+        all_apps = run_path(_paths_map["conf_file"])["applications"]
     except FileNotFoundError:
-        logger.warning(conf_file)
+        logger.warning(_paths_map["conf_file"])
         raise exceptions.MissingRequiredFile(
             "The <conf.py> file should exist at the above location.")
     except KeyError:
@@ -100,11 +90,11 @@ def get_applications(logger, validate=True):
                 raise exceptions.MissingMandatoryField("The <type> field is required.")
 
             if app_type == "archive":
-                validator_set = base_app_keys_for_archives
+                validator_set = _base_app_keys_for["archives"]
             elif app_type == "file":
-                validator_set = base_app_keys_for_files
+                validator_set = _base_app_keys_for["files"]
             elif app_type == "git_repo" or app_type == "hg_repo":
-                validator_set = base_app_keys_for_repos
+                validator_set = _base_app_keys_for["repos"]
 
             if not validator_set.issubset(app):
                 missing_fields += [field for field in validator_set if field not in app]
@@ -301,7 +291,7 @@ class ApplicationsManager():
         filtered_apps = {}
 
         try:
-            with open(update_data_file, "r", encoding="UTF-8") as json_file:
+            with open(_paths_map["update_data_file"], "r", encoding="UTF-8") as json_file:
                 self._last_update_data = json.loads(json_file.read())
         except Exception:
             pass
@@ -782,7 +772,7 @@ class ApplicationsManager():
     def _save_update_data(self):
         """Save update data.
         """
-        with open(update_data_file, "w", encoding="UTF-8") as data_file:
+        with open(_paths_map["update_data_file"], "w", encoding="UTF-8") as data_file:
             data_file.write(json.dumps(self._last_update_data, indent=4, sort_keys=True))
 
     def manage_apps(self):
