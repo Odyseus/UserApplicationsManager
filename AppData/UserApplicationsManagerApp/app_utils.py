@@ -444,8 +444,8 @@ class ApplicationsManager():
                             self._do_clone(repo_type, repo_path, app["url"])
                             self._set_update_data(app_id, "update_date", self.current_date)
 
-                            if app["checkout_revision"]:
-                                self._do_checkout(repo_type, repo_path, app["checkout_revision"])
+                            if app.get("checkout_revision"):
+                                self._do_checkout(repo_type, repo_path, app.get("checkout_revision"))
 
                             continue
 
@@ -456,8 +456,8 @@ class ApplicationsManager():
                             self._do_pull(repo_type, repo_path)
                             self._set_update_data(app_id, "update_date", self.current_date)
 
-                            if app["checkout_revision"]:
-                                self._do_checkout(repo_type, repo_path, app["checkout_revision"])
+                            if app.get("checkout_revision"):
+                                self._do_checkout(repo_type, repo_path, app.get("checkout_revision"))
                         else:
                             self.logger.warning("Manual intervention required!")
                             self.logger.warning(
