@@ -343,6 +343,33 @@ class ApplicationsManager():
         elif repo_type == "hg":
             return ["hg", "-R", ".", "root"]
 
+    def _do_checkout(self, repo_type, repo_path, revision):
+        """Check out revision.
+
+        Parameters
+        ----------
+        repo_type : str
+            "git" or "hg".
+        repo_path : str
+            Path to the local repository.
+        revision : str
+            Branch name/Tag name/Commit hash to check out.
+        """
+        self.logger.info("Checking out revision <%s>..." % revision)
+
+        cmd_utils.run_cmd(
+            "{cmd} {checkout_cmd} {revision}".format(
+                cmd=repo_type,
+                checkout_cmd="checkout" if repo_type is "git" else "update",
+                revision=revision
+            ),
+            stdout=None,
+            stderr=None,
+            shell=True,
+            check=True,
+            cwd=repo_path
+        )
+
     def _do_pull(self, repo_type, repo_path):
         """Pull from a repository.
 
@@ -426,6 +453,10 @@ class ApplicationsManager():
                             self.logger.info("Cloning %s repository." % app["name"])
                             self._do_clone(repo_type, repo_path, app["url"])
                             self._set_update_data(app_id, "update_date", self.current_date)
+
+                            if app["checkout_revision"]:
+                                self._do_checkout(repo_type, repo_path, app["checkout_revision"])
+
                             continue
 
                         # Return code should be zero. If it isn't, then the destination
@@ -434,6 +465,9 @@ class ApplicationsManager():
                             self.logger.info("Pulling from %s's repository." % app["name"])
                             self._do_pull(repo_type, repo_path)
                             self._set_update_data(app_id, "update_date", self.current_date)
+
+                            if app["checkout_revision"]:
+                                self._do_checkout(repo_type, repo_path, app["checkout_revision"])
                         else:
                             self.logger.warning("Manual intervention required!")
                             self.logger.warning(
