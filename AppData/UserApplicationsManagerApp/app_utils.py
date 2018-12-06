@@ -703,6 +703,8 @@ class ApplicationsManager():
             return (now - then) > timedelta(days=6)
         elif frequency == "m":  # Monthly.
             return (now - then) > timedelta(days=29)
+        elif frequency == "s":  # Semestrial.
+            return (now - then) > timedelta(days=87)
 
     def _get_update_data(self, app_id, prop_key):
         """Get update data.
