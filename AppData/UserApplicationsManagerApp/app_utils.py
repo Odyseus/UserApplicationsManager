@@ -494,6 +494,11 @@ class ApplicationsManager():
                     if download_url is None:
                         self.logger.warning("No download URL could be determined. Aborted!")
                     elif download_url and can_download:
+                        parent_dir = os.path.dirname(file_path)
+
+                        if not file_utils.is_real_dir(parent_dir):
+                            os.makedirs(parent_dir)
+
                         try:
                             tqdm_wget.download(download_url, file_path)
                         except KeyboardInterrupt:
