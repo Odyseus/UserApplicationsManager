@@ -350,7 +350,7 @@ class ApplicationsManager():
         cmd_utils.run_cmd(
             "{cmd} {checkout_cmd} {revision}".format(
                 cmd=repo_type,
-                checkout_cmd="checkout" if repo_type is "git" else "update",
+                checkout_cmd="checkout" if repo_type == "git" else "update",
                 revision=revision
             ),
             stdout=None,
