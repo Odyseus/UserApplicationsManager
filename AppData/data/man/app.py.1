@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "APP.PY" "1" "Nov 27, 2018" "" "User Applications Manager"
+.TH "APP.PY" "1" "Dec 16, 2018" "" "User Applications Manager"
 .SH NAME
-app.py \- Utility to manage applications inside a user's home directory.
+app.py \- CLI utility to manage applications inside a user's home directory.
 .
 .nr rst2man-indent-level 0
 .
@@ -86,7 +86,7 @@ The command \fBapp.py manage\fP is used to manage all applications, or the selec
 .SS Commands
 .SS app.py manage
 .sp
-This command will perform different actions depending on the type of application and various conditions.
+This command downloads and \fIinstalls\fP all applications defined in the \fBconf.py\fP file. It will perform different actions depending on the type of application and various conditions.
 .INDENT 0.0
 .IP \(bu 2
 For applications of type \fBgit_repo\fP or \fBhg_repo\fP:
@@ -285,6 +285,8 @@ All data keys are of type string and are optional unless specified otherwise.
 \fBw\fP (weekly): An application is downloaded only if at least 6 days have passed since the last download.
 .IP \(bu 2
 \fBm\fP (monthly): An application is downloaded only if at least 28 days have passed since the last download.
+.IP \(bu 2
+\fBs\fP (semestrial): An application is downloaded only if at least 87 days have passed since the last download.
 .UNINDENT
 .UNINDENT
 .UNINDENT
@@ -299,6 +301,18 @@ All data keys are of type string and are optional unless specified otherwise.
 \fBasset_name_starts\fP: Self explanatory.
 .IP \(bu 2
 \fBasset_name_ends\fP: Self explanatory.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.IP \(bu 2
+\fBcheckout_revision\fP: This key is only used by applications of \fBtype\fP \fBgit_repo\fP or \fBhg_repo\fP\&.
+.INDENT 2.0
+.INDENT 3.5
+.INDENT 0.0
+.IP \(bu 2
+\fBgit_repo\fP: It can be a branch name or a tag name or a commit hash. The command executed will look like: \fBgit checkout <checkout_revision>\fP
+.IP \(bu 2
+\fBhg_repo\fP: It can be a branch name or a tag name. The command executed will look like: \fBhg update <checkout_revision>\fP
 .UNINDENT
 .UNINDENT
 .UNINDENT
