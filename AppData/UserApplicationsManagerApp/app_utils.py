@@ -15,18 +15,19 @@ import tempfile
 import time
 import urllib.request
 
-from .python_utils import cmd_utils
-from .python_utils import exceptions
-from .python_utils import file_utils
-from .python_utils import hash_utils
-from .python_utils import shell_utils
-from .python_utils import tqdm_wget
 from datetime import datetime
 from datetime import timedelta
 from runpy import run_path
 from subprocess import CalledProcessError
 from urllib.error import HTTPError
 from urllib.error import URLError
+
+from .python_utils import cmd_utils
+from .python_utils import exceptions
+from .python_utils import file_utils
+from .python_utils import hash_utils
+from .python_utils import shell_utils
+from .python_utils import tqdm_wget
 
 root_folder = os.path.realpath(os.path.abspath(os.path.join(
     os.path.normpath(os.getcwd()))))
@@ -444,7 +445,8 @@ class ApplicationsManager():
                             self._set_update_data(app_id, "update_date", self.current_date)
 
                             if app.get("checkout_revision"):
-                                self._do_checkout(repo_type, repo_path, app.get("checkout_revision"))
+                                self._do_checkout(repo_type, repo_path,
+                                                  app.get("checkout_revision"))
 
                             continue
 
@@ -456,7 +458,8 @@ class ApplicationsManager():
                             self._set_update_data(app_id, "update_date", self.current_date)
 
                             if app.get("checkout_revision"):
-                                self._do_checkout(repo_type, repo_path, app.get("checkout_revision"))
+                                self._do_checkout(repo_type, repo_path,
+                                                  app.get("checkout_revision"))
                         else:
                             self.logger.warning("Manual intervention required!")
                             self.logger.warning(
@@ -568,13 +571,19 @@ class ApplicationsManager():
             # elif app["unzip_prog"] == "unzip":
             #     cmd += ["unzip", "-o", app["downloaded_filename"]]
             if app["unzip_prog"] == "tar":
-                args = app.get("unzip_args")
+                untar_arg = app.get("untar_arg")
+                cmd = ["tar", "--extract"]
 
-                if not args:
-                    errors.append((app_id, "Missing required <unzip_args> key."))
-                    continue
+                if untar_arg:
+                    cmd += [untar_arg]
 
-                cmd += ["tar", app["unzip_args"], archive, "-C", destination, unzip_target]
+                cmd += [
+                    "--file",
+                    archive,
+                    "-C",
+                    destination,
+                    unzip_target
+                ]
 
             if cmd:
                 try:
