@@ -36,14 +36,6 @@ _paths_map = {
     "update_data_file": os.path.join(root_folder, "UserData", "update-data.json")
 }
 
-_base_app_keys = {"name", "url", "type"}
-_base_app_keys_for = {
-    "archives": _base_app_keys.union(
-        {"unzip_prog", "post_extraction_actions", "unzip_targets"}),
-    "files": _base_app_keys.union({"destination"}),
-    "repos": _base_app_keys.union({"destination"})
-}
-
 
 def get_applications(logger, validate=True):
     """Get applications.
@@ -68,6 +60,8 @@ def get_applications(logger, validate=True):
         See :any:`exceptions.MissingMandatoryField`.
     exceptions.MissingRequiredFile
         See :any:`exceptions.MissingRequiredFile`.
+    SystemExit
+        Halt execution.
     """
     try:
         all_apps = run_path(_paths_map["conf_file"])["applications"]
@@ -79,30 +73,35 @@ def get_applications(logger, validate=True):
         raise exceptions.MissingMandatoryField(
             "The <conf.py> file should have the <applications> property defined.")
 
-    missing_fields = []
-
     if validate:
-        for app_id, app in all_apps.items():
-            app_type = app.get("type")
+        from .python_utils import json_schema_utils
+        from .schemas import applications_schema_global
+        from .schemas import application_schema_archive_type
 
-            if not app_type:
-                logger.error("Application ID: %s" % app_id)
-                raise exceptions.MissingMandatoryField("The <type> field is required.")
+        validation_errors_count = 0
 
-            if app_type == "archive":
-                validator_set = _base_app_keys_for["archives"]
-            elif app_type == "file":
-                validator_set = _base_app_keys_for["files"]
-            elif app_type == "git_repo" or app_type == "hg_repo":
-                validator_set = _base_app_keys_for["repos"]
+        validation_errors_count += json_schema_utils.validate(
+            all_apps, applications_schema_global,
+            raise_error=False,
+            error_message_extra_info="\n".join([
+                "**File:** %s" % _paths_map["conf_file"],
+                "**Data key:** applications"
+            ]),
+            logger=logger)
 
-            if not validator_set.issubset(app):
-                missing_fields += [field for field in validator_set if field not in app]
+        for app in all_apps.values():
+            if app.get("type") == "archive":
+                validation_errors_count += json_schema_utils.validate(
+                    app, application_schema_archive_type,
+                    raise_error=False,
+                    error_message_extra_info="\n".join([
+                        "**File:** %s" % _paths_map["conf_file"],
+                        "**Data key:** applications"
+                    ]),
+                    logger=logger)
 
-            if missing_fields:
-                logger.error("Application ID: %s" % app_id)
-                raise exceptions.MissingMandatoryField(
-                    "The <%s> field/s is/are required." % ", ".join(missing_fields))
+        if validation_errors_count > 0:
+            raise SystemExit(1)
 
     return all_apps
 
