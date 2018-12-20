@@ -1,6 +1,6 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "APP.PY" "1" "Dec 16, 2018" "" "User Applications Manager"
+.TH "APP.PY" "1" "Dec 20, 2018" "" "User Applications Manager"
 .SH NAME
 app.py \- CLI utility to manage applications inside a user's home directory.
 .
@@ -259,7 +259,7 @@ All data keys are of type string and are optional unless specified otherwise.
 .UNINDENT
 .UNINDENT
 .IP \(bu 2
-\fBurl\fP (\fBMandatory\fP): The URL where to download the application.
+\fBurl\fP (\fBMandatory\fP): The URL from where to download the application.
 .IP \(bu 2
 \fBdestination\fP (\fBMandatory\fP): The final destination for an application.
 .INDENT 2.0
@@ -319,7 +319,7 @@ All data keys are of type string and are optional unless specified otherwise.
 .IP \(bu 2
 \fBunzip_prog\fP (\fBMandatory\fP): The name of the command used to unpack an archive. Key only used by applications of \fBtype\fP \fBarchive\fP\&. As of now, only the \fBtar\fP command is implemented.
 .IP \(bu 2
-\fBunzip_args\fP (\fBMandatory\fP): Arguments passed to the command defined in \fBunzip_prog\fP\&. Key only used by applications of \fBtype\fP \fBarchive\fP\&.
+\fBuntar_arg\fP (\fBDefault\fP: empty (no decompression argument is passed to \fBtar\fP)): The decompress argument used by the \fBtar\fP program.
 .IP \(bu 2
 \fBunzip_targets\fP (\fBMandatory\fP | \fBList\fP): A list of tuples. At index zero of each tuple should be defined the path to a file/folder inside a downloaded archive. At index one should be defined the path to the folder where the target should be extracted. Key only used by applications of \fBtype\fP \fBarchive\fP\&.
 .IP \(bu 2
