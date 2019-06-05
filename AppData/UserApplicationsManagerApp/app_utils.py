@@ -441,12 +441,18 @@ class ApplicationsManager():
                             self.logger.warning(
                                 "%s repository doesn't seem to exist." % app["name"])
                             self.logger.info("Cloning %s repository." % app["name"])
-                            self._do_clone(repo_type, repo_path, app["url"])
-                            self._set_update_data(app_id, "update_date", self.current_date)
 
-                            if app.get("checkout_revision"):
-                                self._do_checkout(repo_type, repo_path,
-                                                  app.get("checkout_revision"))
+                            try:
+                                self._do_clone(repo_type, repo_path, app["url"])
+                                self._set_update_data(app_id, "update_date", self.current_date)
+
+                                if app.get("checkout_revision"):
+                                    self._do_checkout(repo_type, repo_path,
+                                                      app.get("checkout_revision"))
+                            except CalledProcessError as err:
+                                self._set_update_data(app_id, "update_date", 0)
+                                self.logger.error(err)
+                                continue
 
                             continue
 
@@ -454,12 +460,18 @@ class ApplicationsManager():
                         # isn't a repository.
                         if p and not p.returncode:
                             self.logger.info("Pulling from %s's repository." % app["name"])
-                            self._do_pull(repo_type, repo_path)
-                            self._set_update_data(app_id, "update_date", self.current_date)
 
-                            if app.get("checkout_revision"):
-                                self._do_checkout(repo_type, repo_path,
-                                                  app.get("checkout_revision"))
+                            try:
+                                self._do_pull(repo_type, repo_path)
+                                self._set_update_data(app_id, "update_date", self.current_date)
+
+                                if app.get("checkout_revision"):
+                                    self._do_checkout(repo_type, repo_path,
+                                                      app.get("checkout_revision"))
+                            except CalledProcessError as err:
+                                self._set_update_data(app_id, "update_date", 0)
+                                self.logger.error(err)
+                                continue
                         else:
                             self.logger.warning("Manual intervention required!")
                             self.logger.warning(
