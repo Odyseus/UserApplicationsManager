@@ -26,6 +26,7 @@ from .python_utils import cmd_utils
 from .python_utils import exceptions
 from .python_utils import file_utils
 from .python_utils import hash_utils
+from .python_utils import json_schema_utils
 from .python_utils import shell_utils
 from .python_utils import tqdm_wget
 
@@ -74,8 +75,7 @@ def get_applications(logger, validate=True):
         raise exceptions.MissingMandatoryField(
             "The <conf.py> file should have the <applications> property defined.")
 
-    if validate:
-        from .python_utils import json_schema_utils
+    if validate and json_schema_utils.JSONSCHEMA_INSTALLED:
         from .schemas import applications_schema_global
         from .schemas import application_schema_archive_type
 
