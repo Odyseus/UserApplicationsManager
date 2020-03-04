@@ -1,6 +1,13 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 """Schemas for JSON data validation.
+
+Attributes
+----------
+application_schema_archive_type : dict
+    JSON schema.
+applications_schema_global : dict
+    JSON schema.
 """
 applications_schema_global = {
     "description": "Schema to validate the 'applications' property inside a UserData/conf.py file.",

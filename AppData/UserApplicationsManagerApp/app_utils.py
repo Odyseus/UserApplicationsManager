@@ -318,15 +318,15 @@ class ApplicationsManager():
     def _get_check_repo_cmd(self, repo_type):
         """Get the command to check a repository.
 
-        Returns
-        -------
-        list
-            The command to check the repository.
-
         Parameters
         ----------
         repo_type : str
             "git" or "hg".
+
+        Returns
+        -------
+        list
+            The command to check the repository.
         """
         if repo_type == "git":
             return ["git", "ls-remote"]
