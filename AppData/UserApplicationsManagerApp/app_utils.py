@@ -29,6 +29,10 @@ from .python_utils import json_schema_utils
 from .python_utils import shell_utils
 from .python_utils import tqdm_wget
 
+# NOTE: Web developers can go f*ck themselves!!!
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
+
 root_folder = os.path.realpath(os.path.abspath(os.path.join(
     os.path.normpath(os.getcwd()))))
 
@@ -399,7 +403,7 @@ class ApplicationsManager():
         cmd_utils.run_cmd(
             "{cmd} clone {depth} {url} {path}".format(
                 cmd=repo_type,
-                depth="--depth=1" if repo_type is "git" else "",
+                depth="--depth=1" if repo_type == "git" else "",
                 url=repo_url,
                 path=os.path.basename(repo_path)
             ),
